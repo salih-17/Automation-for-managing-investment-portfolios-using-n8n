@@ -1,0 +1,136 @@
+{
+  "name": "GoldPrice",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://query1.finance.yahoo.com/v8/finance/chart/GC=F",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e628b6d8-0a67-4355-9a06-bb90af3957a7",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "13prIYjPAWDV6S6TYKP8Z-_MLvd_xY3hQ41fUzXCfZCE",
+          "mode": "list",
+          "cachedResultName": "Gold Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13prIYjPAWDV6S6TYKP8Z-_MLvd_xY3hQ41fUzXCfZCE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "GoldPrice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13prIYjPAWDV6S6TYKP8Z-_MLvd_xY3hQ41fUzXCfZCE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Price": "={{ $json.chart.result[0].meta.regularMarketPrice }}",
+            "Date": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Price",
+              "displayName": "Price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        0
+      ],
+      "id": "f15e95c7-aaf6-4d94-9d91-40645dcef2d6",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GyjJ1EnGI1C5Jkol",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "95efe025-c144-45ca-8b83-289e13686d15",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9108fc86-ef93-434b-ac4f-4bb25c4b5f19",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "48165ca0bfa61ac542b7e50ef86a7b6e10ba5696057b6c058e065467a33f8e66"
+  },
+  "id": "Bx5iJABBe6BSCRfb",
+  "tags": []
+}

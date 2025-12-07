@@ -1,0 +1,235 @@
+{
+  "name": "GoldTransactions",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "571ab1bf-3fcd-4c68-80e8-ee2b676c072e",
+      "name": "Telegram Trigger",
+      "webhookId": "3b05a3c3-34ba-402c-9525-8ee9408f0bb1",
+      "credentials": {
+        "telegramApi": {
+          "id": "LOmcjOMJHa0VNp5A",
+          "name": "Telegram account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are an assistant that extracts structured gold transaction data from a user's free-text message in Arabic and converted to English. The output must be strictly JSON based on the schema below:\n\nSchema (Google Sheet):\ndate\ntransaction_type\ngold_purity\nquantity\ntotal_price\n\nRules:\n•\tExtract values from the user's message for one or multiple transactions.\n•\tOutput must be only JSON — no explanations or text.\n•\ttransaction_type must be \"buy\" or \"sell\".\n•\tgold_purity must be 24, 21, or 18. Accept inputs like \"24K\", \"24 karat\".\n•\tquantity and total_price must be decimal numbers with two decimals.\n•\tdate must be in MM-DD- YYYY format. Convert natural language dates (e.g., \"yesterday\", \"Dec 25\") when possible.\n•\tIf any required field is missing or unclear, return a single clarifying question asking only for that missing value.\n•\tOutput format:\nFor a single transaction:\n\n{\n\" date\": \"2025-12-25\"\n  \"transaction_type\": \"buy\",\n  \"gold_purity\": 24,\n  \"quantity\": 20.50,\n  \"total_price\": 2202.67,\n  \n}\n\nNow date and time is {{$now}}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fb6aded2-b572-4f8f-b775-e9a62debd654",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "\n{\n    \"date\": \"11-30-2025\" , \n  \"transaction_type\": \"buy\",\n  \"gold_purity\": 24,\n  \"quantity\": 20.50,\n  \"total_price\": 2202.67\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        208
+      ],
+      "id": "e4582c56-0ab5-41c3-b11d-9305b7c11a38",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        64,
+        208
+      ],
+      "id": "43395a22-b164-45ce-a7cc-516ffbcd6538",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "1Ik73snorAFqnZIW",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "13prIYjPAWDV6S6TYKP8Z-_MLvd_xY3hQ41fUzXCfZCE",
+          "mode": "list",
+          "cachedResultName": "Gold Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13prIYjPAWDV6S6TYKP8Z-_MLvd_xY3hQ41fUzXCfZCE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1666762067,
+          "mode": "list",
+          "cachedResultName": "Transaction",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13prIYjPAWDV6S6TYKP8Z-_MLvd_xY3hQ41fUzXCfZCE/edit#gid=1666762067"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $json.output.date }}",
+            "transaction_type": "={{ $json.output.transaction_type }}",
+            "gold_purity": "={{ $json.output.gold_purity }}",
+            "quantity": "={{ $json.output.quantity }}",
+            "total_price": "={{ $json.output.total_price }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "transaction_type",
+              "displayName": "transaction_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "gold_purity",
+              "displayName": "gold_purity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "quantity",
+              "displayName": "quantity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_price",
+              "displayName": "total_price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        0
+      ],
+      "id": "434ab19d-0105-43e6-9dc4-1a800500c57f",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GyjJ1EnGI1C5Jkol",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a0858228-6d74-4390-a297-b1c517021bcd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "48165ca0bfa61ac542b7e50ef86a7b6e10ba5696057b6c058e065467a33f8e66"
+  },
+  "id": "pLlyfopHu16Dct5R",
+  "tags": []
+}
